@@ -1,0 +1,111 @@
+{
+  "ver": "1.3.1",
+  "authors": ["you"],
+  "contact": "https://kbase.us/support/",
+  "categories": ["expression", "active"],
+  "widgets": { "input": null, "output": "no-display" },
+  "job_id_output_field": "docker",
+
+  "parameters": [
+    {
+      "id": "workspace_name",
+      "field_type": "text",
+      "optional": false,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": [""]
+    },
+    {
+      "id": "geneset_tsv_path",
+      "field_type": "text",
+      "optional": false,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": [""]
+    },
+    {
+      "id": "multiplex_rdata_path",
+      "field_type": "text",
+      "optional": false,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": [""]
+    },
+    {
+      "id": "restart",
+      "field_type": "text",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": ["0.7"]
+    },
+    {
+      "id": "tau_csv",
+      "field_type": "text",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": ["1,1,1,1,1,1,1,1,1,1"]
+    },
+    {
+      "id": "run_label",
+      "field_type": "text",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": ["run1"]
+    },
+    {
+      "id": "verbosity",
+      "field_type": "text",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": true,
+      "default_values": ["0"]
+    },
+    {
+      "id": "plot",
+      "field_type": "checkbox",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": true,
+      "default_values": ["0"]
+    },
+    {
+      "id": "simple_filenames",
+      "field_type": "checkbox",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": true,
+      "default_values": ["1"]
+    },
+    {
+      "id": "output_name",
+      "field_type": "text",
+      "optional": true,
+      "allow_multiple": false,
+      "advanced": false,
+      "default_values": ["GRIN_Report"]
+    }
+  ],
+
+  "behavior": {
+    "service-mapping": {
+      "url": "",
+      "name": "kb_GRIN",
+      "method": "run_grin",
+      "input_mapping": [
+        { "input_parameter": "geneset_tsv_path", "target_property": "geneset_tsv_path" },
+        { "input_parameter": "multiplex_rdata_path", "target_property": "multiplex_rdata_path" },
+        { "input_parameter": "restart", "target_property": "restart" },
+        { "input_parameter": "tau_csv", "target_property": "tau_csv" },
+        { "input_parameter": "run_label", "target_property": "run_label" },
+        { "input_parameter": "verbosity", "target_property": "verbosity" },
+        { "input_parameter": "plot", "target_property": "plot" },
+        { "input_parameter": "simple_filenames", "target_property": "simple_filenames" },
+        { "input_parameter": "output_name", "target_property": "output_name" }
+      ],
+      "output_mapping": []
+    }
+  }
+}

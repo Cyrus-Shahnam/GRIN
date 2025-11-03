@@ -1,0 +1,66 @@
+name: "GRIN: Gene-set Refinement"
+tooltip: "Refine a gene set using a multiplex network (GRIN)."
+icon: graph
+
+screenshots: []
+
+parameters:
+  workspace_name:
+    ui-name: "Workspace"
+    short-hint: "Workspace to save results in"
+    placeholder: "my_workspace"
+    type: workspace
+
+  geneset_tsv_path:
+    ui-name: "Geneset TSV (staging)"
+    short-hint: "Two columns: set_name <tab> gene_id"
+    placeholder: "/staging/your_geneset.tsv"
+    type: file
+
+  multiplex_rdata_path:
+    ui-name: "Multiplex .RData (staging)"
+    short-hint: "RData built with RandomWalkRestartMH on your multiplex"
+    placeholder: "/staging/multiplex.RData"
+    type: file
+
+  restart:
+    ui-name: "Restart probability (-r)"
+    short-hint: "0–1; typical 0.7"
+
+  tau_csv:
+    ui-name: "Tau per layer (-t)"
+    short-hint: "Comma-separated weights per layer"
+
+  run_label:
+    ui-name: "Run label (-m)"
+    short-hint: "Label for this run"
+
+  verbosity:
+    ui-name: "Verbosity (-v)"
+    short-hint: "0 = quiet; >0 = verbose logs"
+
+  plot:
+    ui-name: "Generate knee/plot (-p)"
+    short-hint: "1 = generate plots; 0 = no plots"
+    placeholder: "1,1,1,1,1,1,1,1,1,1"
+    type: text
+
+  simple_filenames:
+    ui-name: "Simple file names (-s)"
+    short-hint: "1 = simple names; 0 = detailed names"
+    placeholder: "1,1,1,1,1,1,1,1,1,1"
+    type: text
+
+  output_name:
+    ui-name: "Output base name"
+    short-hint: "Base name for output files"
+    placeholder: "kb_grin_output"
+    type: text
+
+description: >
+  Wraps the GRIN R CLI. Upload a two-column geneset TSV and a multiplex RData to staging.
+  The app runs GRIN and provides retained/removed gene lists and a simple HTML log.
+
+
+#gonna have to change the tsv stuff, to a kbase.geneset list onjuect, keeping this this way for now so that I can mentally keep
+#it sraight in my head, of what is what

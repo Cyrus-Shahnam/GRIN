@@ -1,0 +1,19 @@
+name: grin
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - r-base=4.2
+  - r-igraph
+  - r-doparallel
+  - r-optparse
+  - r-signal
+  - r-remotes
+  - git
+  - git-lfs
+  - make
+  - pkg-config
+  - libgit2
+  - gcc_linux-64
+  - gxx_linux-64
+  - gfortran_linux-64
