@@ -4,7 +4,7 @@ channels:
   - bioconda
 dependencies:
   - r-base=4.2
-  - r-igraph
+  - r-igraph             
   - r-doparallel
   - r-optparse
   - r-signal
@@ -14,6 +14,9 @@ dependencies:
   - make
   - pkg-config
   - libgit2
+  - libxml2
+  - curl
+  - openssl
   - gcc_linux-64
   - gxx_linux-64
   - gfortran_linux-64
