@@ -15,7 +15,7 @@ TEST_SCRIPT_NAME = run_tests.sh
 .PHONY: default all compile compile-report build build-executable-script \
         build-startup-script build-test-script test clean
 
-default: compile
+default: all
 
 all: compile build build-startup-script build-executable-script build-test-script
 
