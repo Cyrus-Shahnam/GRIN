@@ -57,4 +57,7 @@ RUN /usr/local/bin/micromamba run -n grin Rscript -e "\
 # --- module files & compile ---
 COPY . /kb/module
 WORKDIR /kb/module
+
 RUN make
+ENTRYPOINT [ "./scripts/entrypoint.sh" ]
+CMD [ ]

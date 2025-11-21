@@ -20,25 +20,13 @@ class kb_GRIN:
     kb_GRIN
 
     Module Description:
-    A KBase module: kb_GRIN
+    Wraps the GRIN R CLI with micromamba-managed dependencies.
     '''
-
-    ######## WARNING FOR GEVENT USERS ####### noqa
-    # Since asynchronous IO can lead to methods - even the same method -
-    # interrupting each other, you must be *very* careful when using global
-    # state. A method could easily clobber the state set by another while
-    # the latter method is running.
-    ######################################### noqa
-    VERSION = "0.0.1"
-    GIT_URL = "https://github.com/Cyrus-Shahnam/GRIN.git"
-    GIT_COMMIT_HASH = "969b835d9cd10d5b536a56b48c4efe2341671f85"
 
     #BEGIN_CLASS_HEADER
     # You can place class-level constants or helpers here; this section is preserved on recompile.
     #END_CLASS_HEADER
 
-    # config contains contents of config file in a hash or None if it couldn't
-    # be found
     def __init__(self, config):
         #BEGIN_CONSTRUCTOR
         self.scratch = os.path.abspath(config['scratch'])
@@ -50,22 +38,80 @@ class kb_GRIN:
         #END_CONSTRUCTOR
         pass
 
+    #BEGIN_CLASS_METHODS
+    def _resolve_input_path(self, maybe_staging_path):
+        """
+        Resolve a Narrative "staging" selection to a local file path.
+        If a real path was provided (e.g., unit tests), return as-is.
+        """
+        if not maybe_staging_path:
+            return None
+        if os.path.exists(maybe_staging_path):
+            return os.path.abspath(maybe_staging_path)
+        out = self.dfu.download_staging_file(
+            {'staging_file_subdir_path': maybe_staging_path})
+        return out['copy_file_path']
+
+    def _run_cmd(self, cmd):
+        print(f"[kb_GRIN] run: {cmd}")
+        p = subprocess.run(
+            cmd, shell=True, text=True,
+            stdout=subprocess.PIPE, stderr=subprocess.STDOUT
+        )
+        if p.returncode != 0:
+            raise RuntimeError(f"Command failed ({p.returncode}):\n{p.stdout}")
+        return p.stdout
+
+    def _boolish(self, v):
+        """
+        Convert Narrative checkbox/text inputs to bool.
+        Accepts 1/0, '1'/'0', 'true'/'false', True/False, yes/no, on/off.
+        """
+        if isinstance(v, bool):
+            return v
+        if v is None:
+            return False
+        s = str(v).strip().lower()
+        return s in ('1', 'true', 't', 'yes', 'y', 'on')
+
+    def _mk_report(self, wsname, html_dir, attach_files, message="GRIN completed."):
+        html_links = []
+        file_links = []
+
+        # Package HTML dir (if present) into a zip, expose index.html
+        if html_dir and os.path.isdir(html_dir):
+            zip_path = os.path.join(self.scratch, f"{uuid.uuid4()}.zip")
+            self.dfu.pack_file({
+                'file_path': html_dir,
+                'pack': 'zip',
+                'output_file_name': os.path.basename(zip_path)
+            })
+            sid = self.dfu.file_to_shock({'file_path': zip_path, 'make_handle': 0})['shock_id']
+            html_links.append({'shock_id': sid, 'name': 'index.html', 'label': 'Open report'})
+
+        # Attach artifacts if they exist
+        for f in attach_files or []:
+            if os.path.exists(f):
+                sid = self.dfu.file_to_shock({'file_path': f, 'make_handle': 0})['shock_id']
+                file_links.append({'shock_id': sid, 'name': os.path.basename(f), 'label': os.path.basename(f)})
+
+        rep = self.kbr.create_extended_report({
+            'workspace_name': wsname,
+            'message': message,
+            'direct_html_link_index': 0 if html_links else None,
+            'html_links': html_links,
+            'file_links': file_links
+        })
+        return {'report_name': rep['name'], 'report_ref': rep['ref']}
+    #END_CLASS_METHODS
 
     def run_grin(self, ctx, params):
         """
-        :param params: instance of type "RunGRINParams" -> structure:
-           parameter "workspace_name" of type "workspace_name", parameter
-           "geneset_tsv_path" of type "file_path", parameter
-           "multiplex_rdata_path" of type "file_path", parameter "restart" of
-           Double, parameter "tau_csv" of String, parameter "run_label" of
-           String, parameter "verbosity" of Long, parameter "plot" of Long,
-           parameter "simple_filenames" of Long, parameter "output_name" of
-           String
-        :returns: instance of type "ReportResults" -> structure: parameter
-           "report_name" of String, parameter "report_ref" of String
+        :param params: dict with keys
+            workspace_name, geneset_tsv_path, multiplex_rdata_path,
+            restart, tau_csv, run_label, verbosity, plot, simple_filenames, output_name
+        :returns: list with one dict: {report_name, report_ref}
         """
-        # ctx is the context object
-        # return variables are: returnVal
         #BEGIN run_grin
         ws = params.get('workspace_name')
         if not ws:
@@ -133,19 +179,3 @@ class kb_GRIN:
         result = self._mk_report(ws, html_dir, attachments, message=f"GRIN completed: {safe_label}")
         return [result]
         #END run_grin
-
-        # At some point might do deeper type checking...
-        if not isinstance(returnVal, dict):
-            raise ValueError('Method run_grin return value ' +
-                             'returnVal is not type dict as required.')
-        # return the results
-        return [returnVal]
-    def status(self, ctx):
-        #BEGIN_STATUS
-        returnVal = {'state': "OK",
-                     'message': "",
-                     'version': self.VERSION,
-                     'git_url': self.GIT_URL,
-                     'git_commit_hash': self.GIT_COMMIT_HASH}
-        #END_STATUS
-        return [returnVal]
