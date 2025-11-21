@@ -20,8 +20,10 @@ elif [ "${1}" = "init" ] ; then
 elif [ "${1}" = "bash" ] ; then
   bash
 elif [ "${1}" = "report" ] ; then
+  # *** This is what the Catalog calls to generate the compilation report ***
   export KB_SDK_COMPILE_REPORT_FILE=./work/compile_report.json
   make compile
 else
-  echo Unknown
+  echo "Unknown command: ${1}"
+  exit 1
 fi
