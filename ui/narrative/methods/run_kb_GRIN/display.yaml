@@ -1,27 +1,20 @@
 name: "GRIN: Gene-set Refinement"
-tooltip: "Refine a gene set using a multiplex network (GRIN)."
-icon: graph
-
+tooltip: "Refine a gene set against a multiplex network using GRIN (R)."
+icon: null
 screenshots: []
 
 parameters:
-  workspace_name:
-    ui-name: "Workspace"
-    short-hint: "Workspace to save results in"
-    placeholder: "my_workspace"
-    type: workspace
-
-  geneset_tsv_path:
-    ui-name: "Geneset TSV (staging)"
-    short-hint: "Two columns: set_name <tab> gene_id"
-    placeholder: "/staging/your_geneset.tsv"
-    type: file
+  feature_set_ref:
+    ui-name: "Gene Set"
+    ui-class: ref
+    data-type: KBaseCollections.FeatureSet
+    short-hint: "Select a FeatureSet from this workspace"
 
   multiplex_rdata_path:
-    ui-name: "Multiplex .RData (staging)"
-    short-hint: "RData built with RandomWalkRestartMH on your multiplex"
-    placeholder: "/staging/multiplex.RData"
-    type: file
+    ui-name: "Multiplex .RData"
+    ui-class: file
+    short-hint: "RData built from your multiplex (e.g., RandomWalkRestartMH)"
+    placeholder: "multiplex.RData"
 
   restart:
     ui-name: "Restart probability (-r)"
@@ -29,11 +22,11 @@ parameters:
 
   tau_csv:
     ui-name: "Tau per layer (-t)"
-    short-hint: "Comma-separated weights per layer"
+    short-hint: "Comma-separated weights per layer (e.g., 1,1,1,...)"
 
   run_label:
     ui-name: "Run label (-m)"
-    short-hint: "Label for this run"
+    short-hint: "Used in output filenames"
 
   verbosity:
     ui-name: "Verbosity (-v)"
@@ -41,26 +34,17 @@ parameters:
 
   plot:
     ui-name: "Generate knee/plot (-p)"
-    short-hint: "1 = generate plots; 0 = no plots"
-    placeholder: "1,1,1,1,1,1,1,1,1,1"
-    type: text
+    short-hint: "Enable GRIN plotting"
 
   simple_filenames:
     ui-name: "Simple file names (-s)"
-    short-hint: "1 = simple names; 0 = detailed names"
-    placeholder: "1,1,1,1,1,1,1,1,1,1"
-    type: text
+    short-hint: "Use simplified output filenames"
 
   output_name:
     ui-name: "Output base name"
-    short-hint: "Base name for output files"
-    placeholder: "kb_grin_output"
-    type: text
+    short-hint: "Base name for the report/files"
 
 description: >
-  Wraps the GRIN R CLI. Upload a two-column geneset TSV and a multiplex RData to staging.
-  The app runs GRIN and provides retained/removed gene lists and a simple HTML log.
-
-
-#gonna have to change the tsv stuff, to a kbase.geneset list onjuect, keeping this this way for now so that I can mentally keep
-#it sraight in my head, of what is what
+  Select a KBase FeatureSet and a multiplex RData from staging. The app converts the FeatureSet
+  into the two-column TSV (set_name<TAB>feature_id) expected by GRIN, runs the analysis,
+  and returns retained/removed lists plus an HTML log.

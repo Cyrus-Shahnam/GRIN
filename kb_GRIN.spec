@@ -1,15 +1,14 @@
 /*
  * A KBase module: kb_GRIN
  */
-
 module kb_GRIN {
     typedef string workspace_name;
-    typedef string file_path;
+    typedef string ws_ref; /* generic workspace object reference */
 
     typedef structure {
         workspace_name workspace_name;
-        file_path geneset_tsv_path;
-        file_path multiplex_rdata_path;
+        ws_ref feature_set_ref;           /* KBaseCollections.FeatureSet */
+        string multiplex_rdata_path;      /* still a staging file */
         float restart;
         string tau_csv;
         string run_label;

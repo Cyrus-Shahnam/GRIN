@@ -8,15 +8,7 @@
 
   "parameters": [
     {
-      "id": "workspace_name",
-      "field_type": "text",
-      "optional": false,
-      "allow_multiple": false,
-      "advanced": false,
-      "default_values": [""]
-    },
-    {
-      "id": "geneset_tsv_path",
+      "id": "feature_set_ref",
       "field_type": "text",
       "optional": false,
       "allow_multiple": false,
@@ -91,11 +83,12 @@
 
   "behavior": {
     "service-mapping": {
-      "url": "",
+      "url": "service_wizard",
       "name": "kb_GRIN",
       "method": "run_grin",
       "input_mapping": [
-        { "input_parameter": "geneset_tsv_path", "target_property": "geneset_tsv_path" },
+        { "narrative_system_variable": "workspace", "target_property": "workspace_name" },
+        { "input_parameter": "feature_set_ref", "target_property": "feature_set_ref" },
         { "input_parameter": "multiplex_rdata_path", "target_property": "multiplex_rdata_path" },
         { "input_parameter": "restart", "target_property": "restart" },
         { "input_parameter": "tau_csv", "target_property": "tau_csv" },
